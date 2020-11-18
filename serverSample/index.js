@@ -2,8 +2,6 @@ var express = require('express')
 
 var app =express()
 
-
-
 app.get('/page1',(req,res) =>{
     console.log(req.path);
     var data={
@@ -32,8 +30,6 @@ app.get('/pages/page2',(req,res)=>{
     </body></html>')
 
 })
-
-
 
 app.listen(5000,() => {
     console.log('Server Started\n=============================\nRunning At Port 5000\n=============================');
