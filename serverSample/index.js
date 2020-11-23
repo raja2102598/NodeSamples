@@ -1,4 +1,4 @@
-var express = require('express')
+var express = require("express");
 var body_parser =require('body-parser')
 
 var app =express()
@@ -58,9 +58,8 @@ app.post('/pages/page3',(req,res)=>{
 
 })
 
-
-app.listen(5000,() => {
+app.listen(5000, () => {
   console.log(
     "Server Started\n=============================\nRunning At Port 5000\n============================="
   );
-})
+});
