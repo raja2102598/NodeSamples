@@ -3,20 +3,11 @@ var body_parser = require("body-parser")
 
 var sqlconn = require("./sqlConn")
 
-var app = express()
 
+var app = express()
 app.use(body_parser.json());
 
-app.get("/users", (req, res) => {
-  sqlconn.receiveUser(function (e, result) {
-    if (e) {
-      console.log(e)
-    } else if (result) {
-      res.send(result)
-    }
-  })
-})
-
+//CREATE
 app.post("/users", (req, res) => {
   var userInput = req.body
 
@@ -29,6 +20,18 @@ app.post("/users", (req, res) => {
   })
 })
 
+//READ
+app.get("/users", (req, res) => {
+  sqlconn.receiveUser(function (e, result) {
+    if (e) {
+      console.log(e)
+    } else if (result) {
+      res.send(result)
+    }
+  })
+})
+
+//UPDATE
 app.put("/users", (req, res) => {
   var userInput = req.body
 
@@ -41,7 +44,7 @@ app.put("/users", (req, res) => {
   })
 })
 
-
+//DELETE
 app.delete("/users", (req, res) => {
   var userid = req.body
 
@@ -54,6 +57,8 @@ app.delete("/users", (req, res) => {
   })
 })
 
+
+//SERVER PORT
 app.listen(5000, () => {
   console.log(
     "Server Started\n=============================\nRunning At Port 5000\n============================="

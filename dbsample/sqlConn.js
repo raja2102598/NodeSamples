@@ -8,9 +8,10 @@ var conn = mysql.createConnection({
   database: "userdb",
 });
 
+
 conn.connect()
 
-
+//CREATE USER FUNCTION
 function addUser(inUserData, callback) {
 
   var ModifiedData = modifyUiData(inUserData)
@@ -26,7 +27,7 @@ function addUser(inUserData, callback) {
   });
 }
 
-//get all users
+//READ USERS FUNCTION
 function receiveUser(callback) {
   var usersCollection = [];
   conn.query("select * from users", function (e, results) {
@@ -44,7 +45,7 @@ function receiveUser(callback) {
   });
 }
 
-
+//UPDATE USER FUNCTION
 function updateUser(inUserData, callback) {
 
   var ModifiedData = modifyUiData(inUserData)
@@ -62,6 +63,8 @@ function updateUser(inUserData, callback) {
   });
 }
 
+
+//DELETE USER FUNCTION
 function deleteUser(inpUser, callback) {
   var user={
     id : inpUser.user_id
@@ -76,6 +79,7 @@ function deleteUser(inpUser, callback) {
     }
   });
 }
+
 
 function modifyDbData(dbResults) {
   var uiResult = {}
