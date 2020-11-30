@@ -1,4 +1,5 @@
-var mysql = require("mysql");
+var mysql = require("mysql")
+
 
 var conn = mysql.createConnection({
   host: "localhost",
@@ -7,60 +8,101 @@ var conn = mysql.createConnection({
   database: "userdb",
 });
 
-conn.connect();
+conn.connect()
+
+
 function addUser(inUserData, callback) {
-  conn.query(
-    "insert into users SET ?",
-    inUserData,
-    function (e, results, fields) {
-      if (e) {
-        console.log(e);
-      } else if (results) {
-        callback(null, results);
-      } else {
-        conn.end();
-      }
+
+  var ModifiedData = modifyUiData(inUserData)
+  
+  conn.query("insert into users SET ?", ModifiedData, function (e, results) {
+    if (e) {
+      console.log(e)
+    } else if (results) {
+      callback(null, results)
+    } else {
+      conn.end()
     }
-  );
+  });
 }
 
 //get all users
 function receiveUser(callback) {
   var usersCollection = [];
-  conn.query("select * from users", function (e, results, fields) {
+  conn.query("select * from users", function (e, results) {
     if (e) {
-      console.log(e);
+      console.log(e)
     } else if (results) {
       results.forEach((user) => {
-        var users = {
-          id: user.id,
-          name: user.name,
-          age: user.age,
-          city: user.city,
-          email: user.email,
-        };
-        usersCollection.push(users);
+        var users = modifyDbData(user)
+        usersCollection.push(users)
       });
       callback(null, usersCollection);
     } else {
-      conn.end();
+      conn.end()
     }
   });
 }
 
-function deleteUser(id, callback) {
-  conn.query("delete from users where id=?", id, function (e, results, fields) {
+
+function updateUser(inUserData, callback) {
+
+  var ModifiedData = modifyUiData(inUserData)
+  var user={
+    id : inUserData.user_id
+  }
+  conn.query("update users SET ? where ?",[ModifiedData,user], function (e, results) {
     if (e) {
-      console.log(e);
+      console.log(e)
     } else if (results) {
-      callback(null, results);
+      callback(null, results)
     } else {
-      conn.end();
+      conn.end()
     }
   });
 }
+
+function deleteUser(inpUser, callback) {
+  var user={
+    id : inpUser.user_id
+  }
+  conn.query("delete from users where ?", user, function (e, results) {
+    if (e) {
+      console.log(e)
+    } else if (results) {
+      callback(null, results)
+    } else {
+      conn.end()
+    }
+  });
+}
+
+function modifyDbData(dbResults) {
+  var uiResult = {}
+
+  uiResult.user_id = dbResults.id
+  uiResult.user_name = dbResults.name
+  uiResult.user_age = dbResults.age
+  uiResult.user_city = dbResults.city
+  uiResult.user_email = dbResults.email
+
+  return uiResult
+}
+function modifyUiData(uiResults) {
+  var dbResult = {}
+  
+  dbResult.name = uiResults.user_name
+  dbResult.age = uiResults.user_age
+  dbResult.city = uiResults.user_city
+  dbResult.email = uiResults.user_email
+
+  return dbResult
+}
+
+
 module.exports = {
   receiveUser: receiveUser,
   addUser: addUser,
-  deleteUser: deleteUser,
+  updateUser:updateUser,
+  deleteUser: deleteUser
 };
