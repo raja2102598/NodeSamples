@@ -58,7 +58,7 @@ app.delete("/users", (req, res) => {
 })
 
 
-//SERVER PORT
+//SERVER
 app.listen(5000, () => {
   console.log(
     "Server Started\n=============================\nRunning At Port 5000\n============================="
