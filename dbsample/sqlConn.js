@@ -6,10 +6,16 @@ var conn = mysql.createConnection({
   user: "root",
   password: "",
   database: "userdb",
-});
+})
 
 
-conn.connect()
+conn.connect((err, dbConn) => {
+  if (err) {
+    console.log(err)
+  } else {
+    console.log("db connected sucessfully")
+  }
+})
 
 //CREATE USER FUNCTION
 function addUser(inUserData, callback) {
