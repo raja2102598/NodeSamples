@@ -1,3 +1,4 @@
+/node_modules
 dbsample/node_modules/.bin/mime
 dbsample/node_modules/.bin/mime.cmd
 dbsample/node_modules/.bin/mime.ps1

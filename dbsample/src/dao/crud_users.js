@@ -1,27 +1,9 @@
-var mysql = require("mysql")
-
-
-var conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "userdb",
-})
-
-
-conn.connect((err, dbConn) => {
-  if (err) {
-    console.log(err)
-  } else {
-    console.log("db connected sucessfully")
-  }
-})
+var conn = require("../common/sqlConn")
 
 //CREATE USER FUNCTION
 function addUser(inUserData, callback) {
-
   var ModifiedData = modifyUiData(inUserData)
-  
+
   conn.query("insert into users SET ?", ModifiedData, function (e, results) {
     if (e) {
       console.log(e)
@@ -30,12 +12,12 @@ function addUser(inUserData, callback) {
     } else {
       conn.end()
     }
-  });
+  })
 }
 
 //READ USERS FUNCTION
 function receiveUser(callback) {
-  var usersCollection = [];
+  var usersCollection = []
   conn.query("select * from users", function (e, results) {
     if (e) {
       console.log(e)
@@ -43,37 +25,39 @@ function receiveUser(callback) {
       results.forEach((user) => {
         var users = modifyDbData(user)
         usersCollection.push(users)
-      });
-      callback(null, usersCollection);
+      })
+      callback(null, usersCollection)
     } else {
       conn.end()
     }
-  });
+  })
 }
 
 //UPDATE USER FUNCTION
 function updateUser(inUserData, callback) {
-
   var ModifiedData = modifyUiData(inUserData)
-  var user={
-    id : inUserData.user_id
+  var user = {
+    id: inUserData.user_id,
   }
-  conn.query("update users SET ? where ?",[ModifiedData,user], function (e, results) {
-    if (e) {
-      console.log(e)
-    } else if (results) {
-      callback(null, results)
-    } else {
-      conn.end()
+  conn.query(
+    "update users SET ? where ?",
+    [ModifiedData, user],
+    function (e, results) {
+      if (e) {
+        console.log(e)
+      } else if (results) {
+        callback(null, results)
+      } else {
+        conn.end()
+      }
     }
-  });
+  )
 }
-
 
 //DELETE USER FUNCTION
 function deleteUser(inpUser, callback) {
-  var user={
-    id : inpUser.user_id
+  var user = {
+    id: inpUser.user_id,
   }
   conn.query("delete from users where ?", user, function (e, results) {
     if (e) {
@@ -83,9 +67,8 @@ function deleteUser(inpUser, callback) {
     } else {
       conn.end()
     }
-  });
+  })
 }
-
 
 function modifyDbData(dbResults) {
   var uiResult = {}
@@ -100,7 +83,7 @@ function modifyDbData(dbResults) {
 }
 function modifyUiData(uiResults) {
   var dbResult = {}
-  
+
   dbResult.name = uiResults.user_name
   dbResult.age = uiResults.user_age
   dbResult.city = uiResults.user_city
@@ -109,10 +92,9 @@ function modifyUiData(uiResults) {
   return dbResult
 }
 
-
 module.exports = {
   receiveUser: receiveUser,
   addUser: addUser,
-  updateUser:updateUser,
-  deleteUser: deleteUser
-};
+  updateUser: updateUser,
+  deleteUser: deleteUser,
+}
