@@ -65,6 +65,7 @@ app.post("/project", (req, res) => {
       console.log(e)
     } else if (result) {
       res.send("Added Successfully")
+      console.log("Added Successfully in DB")
     }
   })
 })

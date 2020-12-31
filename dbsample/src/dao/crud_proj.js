@@ -8,7 +8,22 @@ function addProject(projectData, callback) {
     if (e) {
       console.log(e)
     } else if (results) {
-      assignProject(results.insertId, projectData.stakeholders)
+
+      assignProject(results.insertId, projectData.stakeholders, (e, res) => {
+        if (e) {
+          console.log(e)
+        } else {
+          // console.log(res)
+        }
+      })
+
+      assignTasks(results.insertId, projectData.stakeholders, (err, res) => {
+        if (err) {
+          console.log(err)
+        } else {
+          // console.log(res)
+        }
+      })
       // console.log(results)
       callback(null, results)
     } else {
@@ -17,7 +32,10 @@ function addProject(projectData, callback) {
   })
 }
 
-function assignProject(projectId, stakeHolders) {
+
+
+
+function assignProject(projectId, stakeHolders, callback) {
   stakeHolders.forEach((student) => {
     var Mappeddata = getMap(projectId, student.rollno)
     conn.query(
@@ -28,11 +46,37 @@ function assignProject(projectId, stakeHolders) {
           console.log(err)
         } else {
           // console.log("success")
+          callback(null, result)
         }
       }
     )
   })
 }
+
+function assignTasks(projectId, stakeHolders, callback) {
+  stakeHolders.forEach((student) => {
+    // var tasks = student.tasks
+    student.tasks.forEach((task) => {
+      // console.log(task.name);
+      var Mappeddata = getMapTask(projectId, student.rollno, task.name)
+      conn.query(
+        "insert into user_tasks set ?",
+        Mappeddata,
+        (err, result) => {
+          if (err) {
+            console.log(err)
+          } else {
+            // console.log("success")
+            callback(null, result)
+          }
+        }
+      )
+    })
+    // console.log("break");
+  })
+}
+
+
 
 function modifyUiData(uiResults) {
   var dbResult = {}
@@ -50,6 +94,16 @@ function getMap(p_id, r_no) {
   dbResult.proj_id = p_id
   dbResult.stud_id = r_no
   dbResult.status = "new"
+
+  return dbResult
+}
+
+function getMapTask(p_id, r_no,t_name) {
+  var dbResult = {}
+
+  dbResult.proj_id = p_id
+  dbResult.stud_id = r_no
+  dbResult.task_name = t_name
 
   return dbResult
 }
